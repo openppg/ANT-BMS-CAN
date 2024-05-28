@@ -55,5 +55,5 @@ void loop() {
   Serial.print(bms_can.getEnergyCycle());
   Serial.println(" Wh");
 
-  delay(1000);  // Adjust as needed
+  delay(500);  // Adjust as needed
 }
