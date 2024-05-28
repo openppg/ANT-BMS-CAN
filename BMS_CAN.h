@@ -17,10 +17,16 @@ public:
     float getHighestCellVoltage();
     float getLowestCellVoltage();
     bool isBatteryCharging();
+    bool isChargeWireConnected();
+    bool isBatteryLowSOC();
+    bool isBatteryReady();
+    bool isDischargeMOSStatus();
+    bool isChargeMOSStatus();
     float getHighestTemperature();
     float getLowestTemperature();
     uint32_t getBatteryCycle();
     float getEnergyCycle();
+    uint8_t getBatteryFailureLevel();
 
 private:
     Adafruit_MCP2515 mcp;
@@ -32,10 +38,16 @@ private:
     float highestCellVoltage;
     float lowestCellVoltage;
     bool batteryCharging;
+    bool chargeWireConnected;
+    bool batteryLowSOC;
+    bool batteryReady;
+    bool dischargeMOSStatus;
+    bool chargeMOSStatus;
     float highestTemperature;
     float lowestTemperature;
     uint32_t batteryCycle;
     float energyCycle;
+    uint8_t batteryFailureLevel;
 
     void parsePacket(uint32_t id, uint8_t *data, uint8_t len);
 
