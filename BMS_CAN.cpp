@@ -100,6 +100,38 @@ void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
   }
 }
 
+
+// Writable functions
+void BMS_CAN::enableChargeMOS(bool enable) {
+  mcp.beginPacket(0x18FF28F4);
+  mcp.write(enable ? 0x20 : 0x00); // Assuming bit 5 controls Charge MOS
+  mcp.endPacket();
+}
+
+void BMS_CAN::enableDischargeMOS(bool enable) {
+  mcp.beginPacket(0x18FF28F4);
+  mcp.write(enable ? 0x10 : 0x00); // Assuming bit 4 controls Discharge MOS
+  mcp.endPacket();
+}
+
+void BMS_CAN::clearErrors() {
+  mcp.beginPacket(0x18FF28F4);
+  mcp.write(0x00); // Command to clear errors
+  mcp.endPacket();
+}
+
+void BMS_CAN::forceBalancing() {
+  mcp.beginPacket(0x18FF28F4);
+  mcp.write(0x08); // Command to force balancing
+  mcp.endPacket();
+}
+
+void BMS_CAN::setSOCThreshold(uint8_t threshold) {
+  mcp.beginPacket(0x18FF28F4);
+  mcp.write(threshold); // Command to set SOC threshold
+  mcp.endPacket();
+}
+
 float BMS_CAN::getSOC() {
 #ifdef FREERTOS_H
   xSemaphoreTake(dataMutex, portMAX_DELAY);

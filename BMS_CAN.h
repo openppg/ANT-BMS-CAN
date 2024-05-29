@@ -28,6 +28,13 @@ public:
   float getEnergyCycle();
   uint8_t getBatteryFailureLevel();
 
+  // Writable functions
+  void enableChargeMOS(bool enable);
+  void enableDischargeMOS(bool enable);
+  void clearErrors();
+  void forceBalancing();
+  void setSOCThreshold(uint8_t threshold);
+
 private:
   Adafruit_MCP2515 mcp;
   long baudrate;
