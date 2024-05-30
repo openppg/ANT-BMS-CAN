@@ -1,5 +1,9 @@
 #include "BMS_CAN.h"
 
+#define BASIC_INFO_1_ID 0x18FF28F4
+#define BASIC_INFO_2_ID 0x18FE28F4
+#define BATTERY_CYCLE_INFO_ID 0x18A328F4
+
 BMS_CAN::BMS_CAN(uint8_t csPin, long baudrate)
     : mcp(csPin), baudrate(baudrate) {
   soc = 0.0;
@@ -38,7 +42,7 @@ void BMS_CAN::update() {
 }
 
 void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
-  if (id == 0x18FF28F4) { // BMS Basic Information 1
+  if (id == BASIC_INFO_1_ID) { // BMS Basic Information 1
     bool newChargeWireConnected = data[0] & 0x01;
     bool newBatteryCharging = data[0] & 0x02;
     bool newBatteryLowSOC = data[0] & 0x04;
@@ -66,7 +70,7 @@ void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
 #ifdef FREERTOS_H
     xSemaphoreGive(dataMutex);
 #endif
-  } else if (id == 0x18FE28F4) { // BMS Basic Information 2
+  } else if (id == BASIC_INFO_2_ID) { // BMS Basic Information 2
     float newHighestCellVoltage = (data[0] | (data[1] << 8)) * 0.001;
     float newLowestCellVoltage = (data[2] | (data[3] << 8)) * 0.001;
     float newHighestTemperature = data[4] - 40;
@@ -82,7 +86,7 @@ void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
 #ifdef FREERTOS_H
     xSemaphoreGive(dataMutex);
 #endif
-  } else if (id == 0x18A328F4) { // Battery Cycle Information
+  } else if (id == BATTERY_CYCLE_INFO_ID) { // Battery Cycle Information
     uint32_t newBatteryCycle =
         (data[3] << 24) | (data[2] << 16) | (data[1] << 8) | data[0];
     uint32_t newEnergyCycle =
@@ -103,32 +107,33 @@ void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
 
 // Writable functions
 void BMS_CAN::enableChargeMOS(bool enable) {
-  mcp.beginPacket(0x18FF28F4);
+  mcp.beginPacket(BASIC_INFO_1_ID);
   mcp.write(enable ? 0x20 : 0x00); // Assuming bit 5 controls Charge MOS
   mcp.endPacket();
 }
 
 void BMS_CAN::enableDischargeMOS(bool enable) {
-  mcp.beginPacket(0x18FF28F4);
+  mcp.beginPacket(BASIC_INFO_1_ID);
   mcp.write(enable ? 0x10 : 0x00); // Assuming bit 4 controls Discharge MOS
   mcp.endPacket();
 }
 
 void BMS_CAN::clearErrors() {
-  mcp.beginPacket(0x18FF28F4);
+  mcp.beginPacket(BASIC_INFO_1_ID);
   mcp.write(0x00); // Command to clear errors
   mcp.endPacket();
 }
 
 void BMS_CAN::forceBalancing() {
-  mcp.beginPacket(0x18FF28F4);
+  mcp.beginPacket(BASIC_INFO_1_ID);
   mcp.write(0x08); // Command to force balancing
   mcp.endPacket();
 }
 
-void BMS_CAN::setSOCThreshold(uint8_t threshold) {
-  mcp.beginPacket(0x18FF28F4);
-  mcp.write(threshold); // Command to set SOC threshold
+void BMS_CAN::setMaxDischargeCurrent(uint16_t maxCurrent) {
+  mcp.beginPacket(BASIC_INFO_2_ID);
+  mcp.write(lowByte(maxCurrent));
+  mcp.write(highByte(maxCurrent));
   mcp.endPacket();
 }
 

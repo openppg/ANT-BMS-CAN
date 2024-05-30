@@ -33,7 +33,7 @@ public:
   void enableDischargeMOS(bool enable);
   void clearErrors();
   void forceBalancing();
-  void setSOCThreshold(uint8_t threshold);
+  void setMaxDischargeCurrent(uint16_t maxCurrent);
 
 private:
   Adafruit_MCP2515 mcp;
