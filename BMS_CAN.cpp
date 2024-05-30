@@ -42,7 +42,7 @@ void BMS_CAN::update() {
 }
 
 void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
-  if (id == BASIC_INFO_1_ID) { // BMS Basic Information 1
+  if (id == BASIC_INFO_1_ID) {
     bool newChargeWireConnected = data[0] & 0x01;
     bool newBatteryCharging = data[0] & 0x02;
     bool newBatteryLowSOC = data[0] & 0x04;
@@ -70,7 +70,7 @@ void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
 #ifdef FREERTOS_H
     xSemaphoreGive(dataMutex);
 #endif
-  } else if (id == BASIC_INFO_2_ID) { // BMS Basic Information 2
+  } else if (id == BASIC_INFO_2_ID) {
     float newHighestCellVoltage = (data[0] | (data[1] << 8)) * 0.001;
     float newLowestCellVoltage = (data[2] | (data[3] << 8)) * 0.001;
     float newHighestTemperature = data[4] - 40;
@@ -103,7 +103,6 @@ void BMS_CAN::parsePacket(uint32_t id, uint8_t *data, uint8_t len) {
 #endif
   }
 }
-
 
 // Writable functions
 void BMS_CAN::enableChargeMOS(bool enable) {
