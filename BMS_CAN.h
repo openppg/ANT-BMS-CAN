@@ -6,7 +6,7 @@
 
 class BMS_CAN {
 public:
-  BMS_CAN(uint8_t csPin, long baudrate);
+  BMS_CAN(uint8_t csPin, long baudrate = 250000);
   bool begin();
   void update();
 

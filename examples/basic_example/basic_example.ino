@@ -1,6 +1,8 @@
 #include <BMS_CAN.h>
 
-BMS_CAN bms_can(5, 250000);  // Change CS pin and baud rate as needed
+#define CS_PIN 5
+
+BMS_CAN bms_can(CS_PIN);  // Change CS pin or baud rate as needed
 
 void setup() {
   Serial.begin(115200);
