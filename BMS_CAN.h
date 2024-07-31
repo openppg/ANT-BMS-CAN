@@ -6,7 +6,7 @@
 
 class BMS_CAN {
 public:
-  BMS_CAN(uint8_t csPin, long baudrate);
+  BMS_CAN(uint8_t csPin, long baudrate = 250000);
   bool begin();
   void update();
 
@@ -27,6 +27,13 @@ public:
   uint32_t getBatteryCycle();
   float getEnergyCycle();
   uint8_t getBatteryFailureLevel();
+
+  // Writable functions
+  void enableChargeMOS(bool enable);
+  void enableDischargeMOS(bool enable);
+  void clearErrors();
+  void forceBalancing();
+  void setMaxDischargeCurrent(uint16_t maxCurrent);
 
 private:
   Adafruit_MCP2515 mcp;

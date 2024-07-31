@@ -13,6 +13,7 @@ The `BMS CAN` library simplifies reading BMS data from a CAN bus using the Adafr
 - Read highest and lowest temperature
 - Read battery cycle and energy cycle count
 - Read battery failure level
+- Writing to BMS
 - And more...
 
 ## Installation
